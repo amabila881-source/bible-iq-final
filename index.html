@@ -1,121 +1,28 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bible IQ 100 Timer+Sound</title><style>*{box-sizing:border-box}body{margin:0;background:#0f172a;color:#fff;font-family:sans-serif;display:flex;justify-content:center;padding:10px;min-height:100vh}.card{background:#1e293b;width:100%;max-width:520px;border-radius:20px;padding:18px}.lev{display:flex;gap:6px;margin:8px 0}.lev button{flex:1;padding:7px;border:0;border-radius:8px;font-weight:700}.active{outline:2px solid #fff}.meta{display:flex;justify-content:space-between;color:#94a3b8;font-size:12px;margin:6px 0}.bar{height:10px;background:#334155;border-radius:10px;overflow:hidden;display:flex;margin:6px 0}.fill{height:100%;background:#22c55e;width:100%}.timerBar{height:100%;background:#fbbf24;width:100%;transition:width 1s linear}.diff{padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700}.easy{background:#22c55e;color:#000}.medium{background:#f59e0b;color:#000}.hard{background:#ef4444;color:#fff}.q{font-size:18px;font-weight:800;margin:12px 0;min-height:40px}.opt{width:100%;padding:13px;margin:6px 0;background:#334155;color:#fff;border:2px solid transparent;border-radius:10px;text-align:left;font-size:15px}.opt.correct{background:#22c55e!important;color:#000}.opt.wrong{background:#ef4444!important}.exp{background:#0f172a;border-left:4px solid #fbbf24;padding:10px;border-radius:6px;margin-top:10px;display:none;font-size:13px}.btn{width:100%;padding:13px;background:#fbbf24;color:#000;border:0;border-radius:10px;font-weight:800;margin-top:10px;display:none}.time-circle{width:42px;height:42px;border-radius:50%;background:#334155;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;border:2px solid #fbbf24}</style></head><body><div class="card"><h1 style="color:#fbbf24;text-align:center;margin:0 0 8px">📖 Bible IQ - 100 Qs</h1><div class="lev"><button id="b-all" class="active" onclick="setLev('all')" style="background:#334155;color:#fff">All 100</button><button id="b-Easy" onclick="setLev('Easy')" style="background:#22c55e">Easy</button><button id="b-Medium" onclick="setLev('Medium')" style="background:#f59e0b">Med</button><button id="b-Hard" onclick="setLev('Hard')" style="background:#ef4444;color:#fff">Hard</button></div><div style="display:flex;justify-content:space-between;align-items:center"><div class="meta" style="flex:1"><span id="sc">Score:0</span><span id="ct">1/100</span><span id="db" class="diff easy">EASY</span></div><div id="timerCircle" class="time-circle">15</div></div><div class="bar"><div id="fl" class="fill"></div></div><div class="bar"><div id="tm" class="timerBar"></div></div><div id="qq" class="q"></div><div id="oo"></div><div id="ex" class="exp"></div><button id="nx" class="btn" onclick="nextQ()">Next →</button><div id="end" style="display:none;text-align:center"><h2 id="fin" style="color:#fbbf24"></h2><p id="det"></p><button class="btn" style="display:block" onclick="location.reload()">Play Again</button></div></div><script>
-const ALL=[
-["Who built the ark?","Noah","Moses","Abraham","David",0,"Genesis 6:14","Easy"],
-["How many days creation?","6","7","40","3",0,"Genesis 1","Easy"],
-["Who in lions den?","Daniel","David","Joseph","Paul",0,"Daniel 6:22","Easy"],
-["David killed Goliath with?","Stone sling","Sword","Spear","Prayer",0,"1 Sam 17:49","Easy"],
-["Jesus born where?","Bethlehem","Nazareth","Jerusalem","Egypt",0,"Matthew 2:1","Easy"],
-["Disciples?","12","10","7","40",0,"Luke 6:13","Easy"],
-["Denied Jesus 3x?","Peter","Judas","John","Thomas",0,"Luke 22:61","Easy"],
-["First Bible book?","Genesis","Exodus","Matthew","Psalms",0,"Beginning","Easy"],
-["Led from Egypt?","Moses","Joshua","Abraham","Noah",0,"Exodus 14","Easy"],
-["Fed 5000 with?","5 loaves 2 fish","Manna","Bread","12 baskets",0,"Matthew 14:17","Easy"],
-["First man?","Adam","Moses","Noah","Abraham",0,"Gen 2:7","Easy"],
-["First woman?","Eve","Mary","Sarah","Ruth",0,"Gen 2:22","Easy"],
-["Commandments?","10","5","7","12",0,"Exodus 20","Easy"],
-["Killed Abel?","Cain","Adam","Noah","Seth",0,"Gen 4:8","Easy"],
-["Swallowed by fish?","Jonah","Moses","Peter","Paul",0,"Jonah 1:17","Easy"],
-["Jesus mother?","Mary","Martha","Sarah","Elizabeth",0,"Luke 1:31","Easy"],
-["Betrayed Jesus?","Judas","Peter","John","Thomas",0,"Matt 26:15","Easy"],
-["Sea parted?","Red Sea","Dead Sea","Galilee","Jordan",0,"Exodus 14:21","Easy"],
-["Strongest man?","Samson","David","Goliath","Solomon",0,"Judges 16:30","Easy"],
-["Tempted Eve?","Serpent","Lion","Bear","Fox",0,"Gen 3:1","Easy"],
-["Adam & Eve garden?","Eden","Gethsemane","Ararat","Zion",0,"Gen 2:8","Easy"],
-["Noah's sons?","3","2","4","12",0,"Shem Ham Japheth","Easy"],
-["Jacob's ladder dream?","Jacob","Joseph","Daniel","Abraham",0,"Gen 28:12","Easy"],
-["Who built temple?","Solomon","David","Moses","Abraham",0,"1 Kings 6","Medium"],
-["Bible books total?","66","70","60","50",0,"39+27=66","Medium"],
-["Last book?","Revelation","Jude","Malachi","Acts",0,"Patmos","Medium"],
-["Water to wine where?","Cana","Bethlehem","Nazareth","Jerusalem",0,"John 2:1","Medium"],
-["Jesus fasted?","40 days","30","50","7",0,"Matt 4:2","Medium"],
-["Walls fell?","Jericho","Jerusalem","Babylon","Nineveh",0,"Joshua 6:20","Medium"],
-["Wisest king?","Solomon","David","Saul","Hezekiah",0,"1 Kings 3:12","Medium"],
-["Walked on water?","Peter & Jesus","Moses","David","Paul",0,"Matt 14:29","Medium"],
-["Plagues of Egypt?","10","7","12","5",0,"Exodus 7-12","Medium"],
-["Father of Isaac?","Abraham","Moses","Jacob","Noah",0,"Gen 21:3","Medium"],
-["Jacob's brother?","Esau","Joseph","Isaac","Benjamin",0,"Gen 25:25","Medium"],
-["Tax collector disciple?","Matthew","Mark","Luke","John",0,"Matt 9:9","Medium"],
-["Goliath height?","9 feet","6","10","7",0,"1 Sam 17:4","Medium"],
-["Zacchaeus tree?","Sycamore","Palm","Olive","House",0,"Luke 19:4","Medium"],
-["Moses in Nile?","Nile","Jordan","Red","Dead",0,"Exodus 2:3","Easy"],
-["Paul old name?","Saul","Silas","Simon","Stephen",0,"Acts 9:1","Medium"],
-["Pharaoh dreams interpreter?","Joseph","Moses","Daniel","Aaron",0,"Gen 41:25","Medium"],
-["Jesus grew in?","Nazareth","Bethlehem","Jerusalem","Capernaum",0,"Matt 2:23","Easy"],
-["Crown of?","Thorns","Gold","Silver","Bronze",0,"Matt 27:29","Easy"],
-["Saved Jews?","Esther","Ruth","Mary","Sarah",0,"Esther 4:14","Medium"],
-["Most Psalms wrote?","David","Moses","Solomon","Asaph",0,"73 Psalms","Medium"],
-["Samuel mother?","Hannah","Sarah","Rachel","Leah",0,"1 Sam 1:27","Medium"],
-["Manna is?","Bread from heaven","Meat","Fish","Fruit",0,"Exodus 16:31","Medium"],
-["Left-handed judge?","Ehud","Gideon","Samson","Deborah",0,"Judges 3:15","Hard"],
-["Replaced Judas?","Matthias","Paul","Barnabas","Stephen",0,"Acts 1:26","Hard"],
-["Ark rested mountain?","Ararat","Sinai","Zion","Carmel",0,"Gen 8:4","Hard"],
-["First king Israel?","Saul","David","Solomon","Samuel",0,"1 Sam 10:1","Hard"],
-["Anointed David?","Samuel","Saul","Nathan","Eli",0,"1 Sam 16:13","Hard"],
-["Blinded on road?","Paul","Peter","John","Stephen",0,"Acts 9:3","Hard"],
-["Furnace friends?","Shadrach Meshach Abednego","Peter James John","Moses Aaron","David Solomon",0,"Dan 3:25","Hard"],
-["Philippi jail?","Philippi","Rome","Jerusalem","Ephesus",0,"Acts 16:26","Hard"],
-["Joseph sold for?","20 silver","30","Gold","10",0,"Gen 37:28","Hard"],
-["Oldest man?","Methuselah 969","Adam 930","Noah 950","Jared 962",0,"Gen 5:27","Hard"],
-["Moses died mount?","Nebo","Sinai","Ararat","Zion",0,"Deut 34:1","Hard"],
-["Og bed size?","13 feet","9","12","10",0,"Deut 3:11","Hard"],
-["Years in Egypt?","430","400","70","40",0,"Exodus 12:40","Hard"],
-["Cupbearer?","Nehemiah","Ezra","Mordecai","Daniel",0,"Neh 1:11","Hard"],
-["Rebuilt Jerusalem wall?","Nehemiah","Ezra","Zerubbabel","Joshua",0,"Neh 6:15","Medium"],
-["Prophet to Nineveh?","Jonah","Nahum","Both","Neither",2,"Jonah & Nahum","Hard"],
-["Immanuel means?","God with us","God saves","God love","God great",0,"Matt 1:23","Easy"],
-["Jesus earthly father?","Joseph","God","Zechariah","No one",0,"Matt 1:20","Easy"],
-["Beatitudes count?","8","9","10","7",0,"Matt 5:3-12","Medium"],
-["Rich ruler asked?","Eternal life","Money","Healing","Power",0,"Mark 10:17","Medium"],
-["Lazarus sisters?","Martha & Mary","Rachel Leah","Ruth","Sarah",0,"John 11:1","Easy"],
-["Wages of sin?","Death","Life","Hell","Punishment",0,"Rom 6:23","Easy"],
-["Shipwrecked?","Paul","Peter","Jonah","All",3,"Acts 27","Medium"],
-["I am the way?","Jesus","Peter","Paul","John",0,"John 14:6","Easy"],
-["Tentmaker?","Paul","Peter","Jesus","John",0,"Acts 18:3","Medium"],
-["Wise men number?","Bible doesn't say","3","12","2",0,"Matt 2:1","Hard"],
-["Tribe of Jesus?","Judah","Levi","Benjamin","Joseph",0,"Heb 7:14","Medium"],
-["Son of Nun?","Joshua","Caleb","Moses","Aaron",0,"Ex 33:11","Hard"],
-["John Baptist father?","Zechariah","Joseph","Zebedee","Eliz father",0,"Luke 1:13","Medium"],
-["OT language?","Hebrew & Aramaic","Greek","Aramaic","Hebrew only",0,"Mostly Hebrew","Hard"],
-["King at Jesus birth?","Herod","Augustus","Nero","Pilate",0,"Matt 2:1","Easy"],
-["Jesus died how?","Cross","Stone","Sword","Poison",0,"John 19:18","Easy"],
-["Rose after?","3 days","2","7","40",0,"Matt 28:6","Easy"],
-["Holy Spirit came?","Pentecost","Passover","Tabernacles","Easter",0,"Acts 2:1","Medium"],
-["First miracle?","Water to wine","Healing","Calm sea","Feed 5000",0,"John 2:11","Medium"],
-["Shortest verse?","Jesus wept","Rejoice","God is love","Pray",0,"John 11:35","Easy"],
-["Doubting?","Thomas","Peter","Judas","John",0,"John 20:25","Easy"],
-["First martyr?","Stephen","James","Paul","Peter",0,"Acts 7:59","Medium"],
-["Baskets left after 5000?","12","5","7","10",0,"Matt 14:20","Medium"],
-["Fell from window?","Eutychus","Paul","Peter","Timothy",0,"Acts 20:9","Hard"],
-["Jesus cousin?","John Baptist","Peter","James","Thomas",0,"Luke 1:36","Medium"],
-["Calmed sea?","Galilee","Red","Dead","Med",0,"Mark 4:39","Easy"],
-["Ethiopian reading?","Isaiah","Jeremiah","Psalms","Genesis",0,"Acts 8:28","Hard"],
-["Samson hair cutter?","Delilah called man","Delilah","Philistines","Mother",0,"Judges 16:19","Medium"],
-["King of Salem?","Melchizedek","David","Abraham","Noah",0,"Gen 14:18","Hard"],
-["John ate?","Locusts","Beetles","Flies","Ants",0,"Mark 1:6","Medium"],
-["Thrown overboard?","Jonah","Paul","Peter","James",0,"Jonah 1:15","Easy"],
-["Dry bones prophet?","Ezekiel","Jeremiah","Isaiah","Daniel",0,"Ezekiel 37","Hard"],
-["Wrote Acts?","Luke","Paul","Peter","John",0,"Luke-Acts","Medium"],
-["Lot's city?","Sodom","Gomorrah","Nineveh","Jericho",0,"Gen 19:1","Easy"],
-["Spies sent?","12","10","2","7",0,"Numbers 13:2","Medium"],
-["Leper returned?","One leper","Peter","Thomas","Judas",0,"Luke 17:17","Medium"],
-["Esau sold?","Birthright","Blessing","Land","Sheep",0,"Gen 25:33","Medium"],
-["Woman judge?","Deborah","Ruth","Esther","Hannah",0,"Judges 4:4","Medium"],
-["Hid spies?","Rahab","Ruth","Deborah","Esther",0,"Joshua 2:1","Medium"],
-["Ruth husband?","Boaz","Mahlon","Elimelech","Kilion",0,"Ruth 4:13","Medium"]
-];
-let qs=[...ALL],i=0,s=0,lock=false,t=15,timer=null,aud=null;
-function initAud(){if(!aud)aud=new(window.AudioContext||window.webkitAudioContext)();}
-function beep(f,d,v,tp){initAud();let o=aud.createOscillator(),g=aud.createGain();o.type=tp||'sine';o.frequency.value=f;o.connect(g);g.connect(aud.destination);g.gain.value=v||0.3;o.start();g.gain.exponentialRampToValueAtTime(0.01,aud.currentTime+d);o.stop(aud.currentTime+d);}
-function soundCorrect(){beep(523,0.2,0.3);setTimeout(()=>beep(659,0.2,0.3),150);setTimeout(()=>beep(784,0.4,0.3),300);}
-function soundWrong(){beep(150,0.6,0.4,'sawtooth');}
-function soundTick(){beep(900,0.1,0.15);}
-function soundTimeUp(){beep(80,0.8,0.4,'square');}
-function setLev(l){document.querySelectorAll('.lev button').forEach(b=>b.classList.remove('active'));document.getElementById('b-'+l).classList.add('active');if(l==='all')qs=[...ALL];else qs=ALL.filter(x=>x[7]===l);i=0;s=0;load();}
-function startTimer(){clearInterval(timer);t=15;let tc=document.getElementById('timerCircle');let tm=document.getElementById('tm');tc.innerText=t;tm.style.width='100%';tm.style.background='#22c55e';tc.style.color='#fff';tc.style.borderColor='#fbbf24';timer=setInterval(()=>{t--;tc.innerText=t;tm.style.width=(t/15*100)+'%';if(t<=5){tm.style.background='#ef4444';tc.style.color='#ef4444';tc.style.borderColor='#ef4444';if(t>0)soundTick();}if(t<=0){clearInterval(timer);timeUp();}},1000);}
-function timeUp(){if(lock)return;lock=true;soundTimeUp();let c=qs[i];let btns=document.querySelectorAll('.opt');btns[c[5]].classList.add('correct');let ex=document.getElementById('ex');ex.innerHTML=`<b>⏰ Time Up! Answer: ${c[c[5]+1]}</b><br>${c[6]}`;ex.style.display='block';document.getElementById('nx').style.display='block';}
-function load(){if(i>=qs.length){clearInterval(timer);document.getElementById('qq').style.display='none';document.getElementById('oo').style.display='none';document.getElementById('ex').style.display='none';document.getElementById('nx').style.display='none';document.getElementById('end').style.display='block';document.getElementById('fin').innerText=`Final ${s}/${qs.length}`;document.getElementById('det').innerText=(s/qs.length>0.8?'🏆 Bible Genius!':s/qs.length>0.5?'👏 Great Faith!':'📖 Keep Studying!');document.getElementById('fl').style.width='100%';return;}lock=false;let c=qs[i];document.getElementById('sc').innerText=`Score:${s}`;document.getElementById('ct').innerText=`${i+1}/${qs.length}`;let db=document.getElementById('db');db.innerText=c[7];db.className='diff '+(c[7]==='Easy'?'easy':c[7]==='Medium'?'medium':'hard');document.getElementById('fl').style.width=`${(i/qs.length)*100}%`;document.getElementById('qq').innerText=(i+1)+". "+c[0];let oo=document.getElementById('oo');oo.innerHTML='';for(let k=1;k<=4;k++){let b=document.createElement('button');b.className='opt';b.innerText=c[k];b.onclick=()=>check(k-1,b);oo.appendChild(b);}document.getElementById('ex').style.display='none';document.getElementById('nx').style.display='none';startTimer();}
-function check(idx,btn){if(lock)return;lock=true;clearInterval(timer);initAud();let c=qs[i];let btns=document.querySelectorAll('.opt');if(idx===c[5]){btn.classList.add('correct');s++;soundCorrect();}else{btn.classList.add('wrong');btns[c[5]].classList.add('correct');soundWrong();}document.getElementById('sc').innerText=`Score:${s}`;let ex=document.getElementById('ex');ex.innerHTML=`<b>${idx===c[5]?'✅ Correct!':'❌ Wrong! Answer: '+c[c[5]+1]}</b><br>${c[6]}`;ex.style.display='block';document.getElementById('nx').style.display='block';}
-function nextQ(){i++;load();}
-load();
-document.body.addEventListener('click',initAud,{once:true});
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bible Faith Champion - 100</title>
+<script src="https://alwingulla.com/88/tag.min.js" data-zone="XXXXXX" data-cfasync="false" async></script>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:10px;background:linear-gradient(to right,#2c5364,#203a43,#0f2027);color:#fff;font-family:system-ui;display:flex;justify-content:center;min-height:100vh}
+.card{max-width:720px;width:100%;background:#fff;color:#111;border-radius:20px;padding:18px}h1{text-align:center;color:#0a3d62;margin:0;font-size:22px}.sub{text-align:center;color:#555;font-size:12px;margin-bottom:8px}
+.top{display:flex;justify-content:space-between;margin:12px 0}.pill{background:#0a3d62;color:#fff;padding:6px 12px;border-radius:20px;font-weight:900;font-size:12px}
+.q{font-size:18px;font-weight:900;margin:12px 0;min-height:56px;color:#0a3d62}.opts{display:grid;gap:10px}.opt{padding:14px;border:2px solid #e0e0e0;border-radius:12px;background:#f7f9fc;font-weight:700;cursor:pointer}.opt.correct{background:#27ae60;color:#fff}.opt.wrong{background:#e74c3c;color:#fff}
+.exp{margin-top:10px;padding:10px;background:#eaf2ff;border-radius:10px;display:none;font-size:13px;font-weight:600}.btn{margin-top:14px;padding:14px;border:0;border-radius:12px;background:#0a3d62;color:#fff;font-weight:900;width:100%;font-size:15px}
+.adbox{margin:12px 0;padding:10px;background:#fffbe6;border:2px dashed #f1c40f;border-radius:10px;text-align:center;font-size:11px;color:#333}
+</style></head><body><div class="card">
+<h1>🏆 Bible Faith Champion - 100</h1><div class="sub">100 Faith Questions • No Same Letter Twice • Monetag Ready</div>
+<div class="adbox">💰 Top Ad</div>
+<div class="top"><span class="pill" id="score">Score: 0/100</span><span class="pill" id="count">Q 1/100</span></div>
+<div class="q" id="q"></div><div class="opts" id="opts"></div><div class="exp" id="exp"></div>
+<button class="btn" id="next" style="display:none" onclick="nextQ()">Next →</button>
+{"q":"41. Faith is substance of things hoped for?","o":["Going to church","Being good","Substance of things hoped for, evidence of things not seen","Feeling happy"],"a":2,"e":"Hebrews 11:1"},{"q":"42. Without faith it is impossible to?","o":["Be happy","Go to church","Be rich","Please God"],"a":3,"e":"Hebrews 11:6"},{"q":"43. Faith comes by hearing and hearing by?","o":["Pastor","The Word of God","Music","Friends"],"a":1,"e":"Romans 10:17"},{"q":"44. Who is author and finisher of our faith?","o":["Paul","Jesus","Moses","Abraham"],"a":1,"e":"Hebrews 12:2"},{"q":"45. Faith without works is?","o":["Perfect","Alive","Enough","Dead"],"a":3,"e":"James 2:26"},{"q":"46. We walk by faith, not by?","o":["Fear","Sight","Law","Works"],"a":1,"e":"2 Cor 5:7"},{"q":"47. Centurion showed great faith saying?","o":["I am strong","Lord I am not worthy","I am holy","I am rich"],"a":1,"e":"Matthew 8:8"},{"q":"48. Abraham faith counted as?","o":["Wisdom","Righteousness","Power","Money"],"a":1,"e":"Genesis 15:6"},{"q":"49. By faith walls of Jericho?","o":["Grew taller","Fell down","Disappeared","Moved"],"a":1,"e":"Hebrews 11:30"},{"q":"50. Faith can move?","o":["Rivers","Houses","Cars","Mountains"],"a":3,"e":"Matthew 17:20"},{"q":"51. Who walked on water by faith then doubted?","o":["Paul","Peter","John","James"],"a":1,"e":"Matthew 14:29"},{"q":"52. Mustard seed faith can?","o":["Heal all","Move mountains","Fly","Be invisible"],"a":1,"e":"Matthew 17:20"},{"q":"53. Faith is fruit of?","o":["The Flesh","Money","The Spirit","The Law"],"a":2,"e":"Galatians 5:22"},{"q":"54. Shield of faith quenches darts of?","o":["Friends","Family","The wicked","Government"],"a":2,"e":"Ephesians 6:16"},{"q":"55. Fight the good fight of?","o":["Power","Fame","Money","Faith"],"a":3,"e":"1 Tim 6:12"},{"q":"56. The just shall live by?","o":["Faith","Works","Bread","Law"],"a":0,"e":"Romans 1:17"},{"q":"57. Abraham believed God and it was counted as?","o":["Pride","Weakness","Sin","Righteousness"],"a":3,"e":"Romans 4:3"},{"q":"58. By faith Noah built?","o":["A tower","A city","An ark","A temple"],"a":2,"e":"Hebrews 11:7"},{"q":"59. By faith Moses refused to be called son of?","o":["King Saul","Herod","Pharaoh's daughter","David"],"a":2,"e":"Hebrews 11:24"},{"q":"60. Woman with issue of blood touched Jesus by?","o":["Accident","Mistake","Faith","Force"],"a":2,"e":"Mark 5:34"},{"q":"61. Faith is substance of things hoped for?","o":["Feeling happy","Substance of things hoped for, evidence of things not seen","Going to church","Being good"],"a":1,"e":"Hebrews 11:1"},{"q":"62. Without faith it is impossible to?","o":["Be rich","Go to church","Please God","Be happy"],"a":2,"e":"Hebrews 11:6"},{"q":"63. Faith comes by hearing and hearing by?","o":["Music","Friends","The Word of God","Pastor"],"a":2,"e":"Romans 10:17"},{"q":"64. Who is author and finisher of our faith?","o":["Abraham","Paul","Jesus","Moses"],"a":2,"e":"Hebrews 12:2"},{"q":"65. Faith without works is?","o":["Dead","Perfect","Alive","Enough"],"a":0,"e":"James 2:26"},{"q":"66. We walk by faith, not by?","o":["Works","Law","Fear","Sight"],"a":3,"e":"2 Cor 5:7"},{"q":"67. Centurion showed great faith saying?","o":["I am holy","Lord I am not worthy","I am strong","I am rich"],"a":1,"e":"Matthew 8:8"},{"q":"68. Abraham faith counted as?","o":["Power","Wisdom","Righteousness","Money"],"a":2,"e":"Genesis 15:6"},{"q":"69. By faith walls of Jericho?","o":["Fell down","Grew taller","Moved","Disappeared"],"a":0,"e":"Hebrews 11:30"},{"q":"70. Faith can move?","o":["Mountains","Houses","Rivers","Cars"],"a":0,"e":"Matthew 17:20"},{"q":"71. Who walked on water by faith then doubted?","o":["James","John","Peter","Paul"],"a":2,"e":"Matthew 14:29"},{"q":"72. Mustard seed faith can?","o":["Fly","Be invisible","Move mountains","Heal all"],"a":2,"e":"Matthew 17:20"},{"q":"73. Faith is fruit of?","o":["Money","The Law","The Spirit","The Flesh"],"a":2,"e":"Galatians 5:22"},{"q":"74. Shield of faith quenches darts of?","o":["Government","The wicked","Friends","Family"],"a":1,"e":"Ephesians 6:16"},{"q":"75. Fight the good fight of?","o":["Faith","Money","Power","Fame"],"a":0,"e":"1 Tim 6:12"},{"q":"76. The just shall live by?","o":["Law","Bread","Works","Faith"],"a":3,"e":"Romans 1:17"},{"q":"77. Abraham believed God and it was counted as?","o":["Sin","Pride","Weakness","Righteousness"],"a":3,"e":"Romans 4:3"},{"q":"78. By faith Noah built?","o":["A temple","A tower","A city","An ark"],"a":3,"e":"Hebrews 11:7"},{"q":"79. By faith Moses refused to be called son of?","o":["Pharaoh's daughter","David","Herod","King Saul"],"a":0,"e":"Hebrews 11:24"},{"q":"80. Woman with issue of blood touched Jesus by?","o":["Force","Accident","Faith","Mistake"],"a":2,"e":"Mark 5:34"},{"q":"81. Faith is substance of things hoped for?","o":["Being good","Going to church","Feeling happy","Substance of things hoped for, evidence of things not seen"],"a":3,"e":"Hebrews 11:1"},{"q":"82. Without faith it is impossible to?","o":["Be rich","Be happy","Please God","Go to church"],"a":2,"e":"Hebrews 11:6"},{"q":"83. Faith comes by hearing and hearing by?","o":["Music","Pastor","The Word of God","Friends"],"a":2,"e":"Romans 10:17"},{"q":"84. Who is author and finisher of our faith?","o":["Abraham","Jesus","Moses","Paul"],"a":1,"e":"Hebrews 12:2"},{"q":"85. Faith without works is?","o":["Enough","Alive","Perfect","Dead"],"a":3,"e":"James 2:26"},{"q":"86. We walk by faith, not by?","o":["Works","Fear","Law","Sight"],"a":3,"e":"2 Cor 5:7"},{"q":"87. Centurion showed great faith saying?","o":["I am rich","I am holy","Lord I am not worthy","I am strong"],"a":2,"e":"Matthew 8:8"},{"q":"88. Abraham faith counted as?","o":["Money","Power","Righteousness","Wisdom"],"a":2,"e":"Genesis 15:6"},{"q":"89. By faith walls of Jericho?","o":["Fell down","Disappeared","Moved","Grew taller"],"a":0,"e":"Hebrews 11:30"},{"q":"90. Faith can move?","o":["Cars","Mountains","Rivers","Houses"],"a":1,"e":"Matthew 17:20"},{"q":"91. Who walked on water by faith then doubted?","o":["John","Peter","Paul","James"],"a":1,"e":"Matthew 14:29"},{"q":"92. Mustard seed faith can?","o":["Be invisible","Move mountains","Heal all","Fly"],"a":1,"e":"Matthew 17:20"},{"q":"93. Faith is fruit of?","o":["The Law","The Flesh","Money","The Spirit"],"a":3,"e":"Galatians 5:22"},{"q":"94. Shield of faith quenches darts of?","o":["Family","The wicked","Friends","Government"],"a":1,"e":"Ephesians 6:16"},{"q":"95. Fight the good fight of?","o":["Faith","Power","Money","Fame"],"a":0,"e":"1 Tim 6:12"},{"q":"96. The just shall live by?","o":["Bread","Works","Faith","Law"],"a":2,"e":"Romans 1:17"},{"q":"97. Abraham believed God and it was counted as?","o":["Righteousness","Sin","Weakness","Pride"],"a":0,"e":"Romans 4:3"},{"q":"98. By faith Noah built?","o":["An ark","A tower","A city","A temple"],"a":0,"e":"Hebrews 11:7"},{"q":"99. By faith Moses refused to be called son of?","o":["David","King Saul","Herod","Pharaoh's daughter"],"a":3,"e":"Hebrews 11:24"},{"q":"100. Woman with issue of blood touched Jesus by?","o":["Mistake","Faith","Accident","Force"],"a":1,"e":"Mark 5:34"}];
+let cur=0,score=0;
+function render(){if(cur>=allQs.length){document.getElementById('q').innerHTML='<h2>🏆 Final: '+score+'/'+allQs.length+'</h2><p style=text-align:center><button class=btn onclick="location.reload()">Play Again</button></p>';document.getElementById('opts').innerHTML='';document.getElementById('exp').style.display='none';document.getElementById('next').style.display='none';document.getElementById('adFinal').style.display='block';return;}
+let qq=allQs[cur];document.getElementById('q').textContent=qq.q;document.getElementById('count').textContent='Q '+(cur+1)+'/'+allQs.length;document.getElementById('score').textContent='Score: '+score+'/'+allQs.length;
+let o=document.getElementById('opts');o.innerHTML='';qq.o.forEach((x,i)=>{let d=document.createElement('div');d.className='opt';d.textContent=String.fromCharCode(65+i)+'. '+x;d.onclick=()=>choose(i);o.appendChild(d);});
+document.getElementById('exp').style.display='none';document.getElementById('next').style.display='none';}
+function choose(i){let qq=allQs[cur];document.querySelectorAll('.opt').forEach((d,x)=>{if(x==qq.a)d.classList.add('correct');else if(x==i)d.classList.add('wrong');d.style.pointerEvents='none';});
+let e=document.getElementById('exp');e.style.display='block';e.textContent=(i==qq.a?'✅ ':'❌ Correct: '+qq.o[qq.a]+' • ')+qq.e;
+if(i==qq.a)score++;document.getElementById('score').textContent='Score: '+score+'/'+allQs.length;document.getElementById('next').style.display='block';}
+function nextQ(){cur++;render();}render();
 </script></body></html>
